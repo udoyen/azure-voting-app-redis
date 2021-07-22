@@ -4,6 +4,7 @@ import random
 import redis
 import socket
 import sys
+import requests
 
 import logging
 from datetime import datetime
@@ -32,24 +33,24 @@ config_integration.trace_integrations(['logging'])
 config_integration.trace_integrations(['requests'])
 # Standard Logging
 logger = logging.getLogger(__name__)
-handler = AzureLogHandler(connection_string='InstrumentationKey=93dc95c3-40d5-4eaf-9c1d-3d41ba7e4412')
+handler = AzureLogHandler(connection_string='InstrumentationKey=726e6f3a-abdf-4c03-a3f6-b06a8dd11ad6;IngestionEndpoint=https://brazilsouth-0.in.applicationinsights.azure.com/')
 handler.setFormatter(logging.Formatter('%(traceId)s %(spanId)s %(message)s'))
 logger.addHandler(handler)
 # Logging custom Events
-logger.addHandler(AzureEventHandler(connection_string='InstrumentationKey=93dc95c3-40d5-4eaf-9c1d-3d41ba7e4412'))
+logger.addHandler(AzureEventHandler(connection_string='InstrumentationKey=726e6f3a-abdf-4c03-a3f6-b06a8dd11ad6;IngestionEndpoint=https://brazilsouth-0.in.applicationinsights.azure.com/'))
 # Set the logging level
 logger.setLevel(logging.INFO)
 
 # Metrics
 exporter = metrics_exporter.new_metrics_exporter(
 enable_standard_metrics=True,
-connection_string='InstrumentationKey=93dc95c3-40d5-4eaf-9c1d-3d41ba7e4412')
+connection_string='InstrumentationKey=726e6f3a-abdf-4c03-a3f6-b06a8dd11ad6;IngestionEndpoint=https://brazilsouth-0.in.applicationinsights.azure.com/')
 view_manager.register_exporter(exporter)
 
 # Tracing
 tracer = Tracer(
  exporter=AzureExporter(
-     connection_string='InstrumentationKey=93dc95c3-40d5-4eaf-9c1d-3d41ba7e4412'),
+     connection_string='InstrumentationKey=726e6f3a-abdf-4c03-a3f6-b06a8dd11ad6;IngestionEndpoint=https://brazilsouth-0.in.applicationinsights.azure.com/'),
  sampler=ProbabilitySampler(1.0),
 )
 
@@ -58,7 +59,7 @@ app = Flask(__name__)
 # Requests
 middleware = FlaskMiddleware(
  app,
- exporter=AzureExporter(connection_string="InstrumentationKey=93dc95c3-40d5-4eaf-9c1d-3d41ba7e4412"),
+    exporter=AzureExporter(connection_string="InstrumentationKey=726e6f3a-abdf-4c03-a3f6-b06a8dd11ad6;IngestionEndpoint=https://brazilsouth-0.in.applicationinsights.azure.com/"),
  sampler=ProbabilitySampler(rate=1.0)
 )
 
@@ -82,9 +83,13 @@ else:
     title = app.config['TITLE']
 
 # Redis configurations
-redis_server = os.environ['REDIS']
 
 # Redis Connection
+
+r = redis.Redis()
+
+"""
+redis_server = os.environ['REDIS']
 try:
     if "REDIS_PWD" in os.environ:
         r = redis.StrictRedis(host=redis_server,
@@ -95,6 +100,8 @@ try:
     r.ping()
 except redis.ConnectionError:
     exit('Failed to connect to Redis, terminating.')
+
+"""
 
 # Change title to host name to demo NLB
 if app.config['SHOWHOST'] == "true":
@@ -164,4 +171,6 @@ def index():
          return render_template("index.html", value1=int(vote1), value2=int(vote2), button1=button1, button2=button2, title=title)
 
 if __name__ == "__main__":
-    app.run()
+    app.run() # local
+    # Deployment configuration for VMSS
+    # app.run(host='0.0.0.0', threaded=True, debug=True) # remote
