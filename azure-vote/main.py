@@ -25,12 +25,12 @@ if ("TITLE" in os.environ and os.environ['TITLE']):
 else:
     title = app.config['TITLE']
 
-# Redis Connection to a local server running on the same machine where the current FLask app is running. 
+# Redis Connection to a local server running on the same machine where the current FLask app is running.
 r = redis.Redis()
 
 """
-# The commented section below is used while deploying the application with two separate containers - 
-# One container for Redis and another for the frontend. 
+# The commented section below is used while deploying the application with two separate containers -
+# One container for Redis and another for the frontend.
 
 # Redis configurations
 redis_server = os.environ['REDIS']
@@ -70,7 +70,7 @@ def index():
     elif request.method == 'POST':
 
         if request.form['vote'] == 'reset':
-            
+
             # Empty table and return results
             r.set(button1,0)
             r.set(button2,0)
@@ -83,17 +83,17 @@ def index():
             logger.info('Dogs Vote', extra=properties)
 
             return render_template("index.html", value1=int(vote1), value2=int(vote2), button1=button1, button2=button2, title=title)
-        
+
         else:
 
             # Insert vote result into DB
             vote = request.form['vote']
             r.incr(vote,1)
-            
+
             # Get current values
             vote1 = r.get(button1).decode('utf-8')
-            vote2 = r.get(button2).decode('utf-8')  
-                
+            vote2 = r.get(button2).decode('utf-8')
+
             # Return results
             return render_template("index.html", value1=int(vote1), value2=int(vote2), button1=button1, button2=button2, title=title)
 
