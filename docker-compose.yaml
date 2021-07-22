@@ -6,7 +6,7 @@ services:
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
     ports:
-        - "6379:6379"
+        - "25000:25000"
 
   azure-vote-front:
     build: ./azure-vote
