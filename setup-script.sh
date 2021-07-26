@@ -144,3 +144,15 @@ az network nsg rule create \
 echo "Port 22 added to NSG: $nsgName"
 
 echo "VMSS script completed!"
+
+echo "Running custom script"
+
+az vmss extension set \
+    --publisher Microsoft.Azure.Extensions \
+    --version 2.0 \
+    --name CustomScript \
+    --resource-group bartelsmann-rg \
+    --vmss-name $vmssName \
+    --settings @customConfig.json
+
+echo "Finished running custom script"
