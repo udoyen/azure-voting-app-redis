@@ -6,6 +6,7 @@ packages:
   - python3-pip
   - redis-server
   - nginx 
+  - tmux
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/default
@@ -24,6 +25,7 @@ write_files:
       }
 
 runcmd:
+  - tmux
   - sed -i.bak 's/^supervised no/supervised systemd/' /etc/redis/redis.conf
   - service redis restart
   - apt update
