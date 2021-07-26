@@ -6,25 +6,37 @@ packages:
   - python3-pip
   - redis-server
   - nginx 
+  - tmux
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/default
     content: |
       server {
         listen 80;
+	server_name localhost;
         access_log /var/log/nginx/flask.log;
         location / {
           proxy_pass http://localhost:5000;
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection keep-alive;
-          proxy_set_header Host $host;
+          proxy_set_header Host "localhost";
           proxy_cache_bypass $http_upgrade;
         }
       }
 
 runcmd:
+  - tmux
   - sed -i.bak 's/^supervised no/supervised systemd/' /etc/redis/redis.conf
   - service redis restart
   - apt update
   - pip3 install --upgrade pip
+  - git clone https://github.com/udoyen/azure-voting-app-redis.git  /home/udacityadmin/azure-voting-app-redis
+  - cd /home/udacityadmin/azure-voting-app-redis/
+  - git checkout Deploy_to_VMSS
+  - pip3 install -r requirements.txt
+  - cd azure-vote/
+  - sed -E -i.bak 's/^(\s*)(app\.run\(\)[[:space:]]*\#[[:space:]]*local)/\1\# \2/' main.py 
+  - sed -E -i.bak 's/^(\s*)\#\s*(app\.run\(host.*\)\s*\#\s*remote)/\1\2/' main.py
+  - chown -R udacityadmin:udacityadmin /home/udacityadmin/azure-voting-app-redis
+  - python3 main.py
