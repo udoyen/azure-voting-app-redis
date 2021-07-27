@@ -35,6 +35,6 @@ echo "Finished folder ownership update"
 
 echo "Starting flask app ..."
 
-(python3 /home/udacityadmin/azure-voting-app-redis/azure-vote/main.py & && echo "Flask app started") || echo "Flask app start failed!"
+python3 /home/udacityadmin/azure-voting-app-redis/azure-vote/main.py &
 
 
