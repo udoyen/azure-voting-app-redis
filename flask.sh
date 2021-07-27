@@ -2,11 +2,11 @@
 
 set -e
 
-apt-get update
+sudo apt-get update
 
 echo "Installing requirements ..."
  
-pip3 install -r /home/udacityadmin/azure-voting-app-redis/requirements.txt
+sudo -H pip3 install -r /home/udacityadmin/azure-voting-app-redis/requirements.txt
 
 echo "Finished installing requirements"
 
