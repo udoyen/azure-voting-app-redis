@@ -25,7 +25,7 @@ source /home/udacityadmin/azure-voting-app-redis/venv/bin/activate
 
 echo "Installing python requirements"
 
-pip3 install --ignore-installed pyasn1 -r /home/udacityadmin/azure-voting-app-redis/requirements.txt
+pip3 install --ignore-installed pyasn1-modules==0.2.1 -r /home/udacityadmin/azure-voting-app-redis/requirements.txt
 
 echo "Updating ownership of the flask app folder ..."
 
