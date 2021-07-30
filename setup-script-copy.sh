@@ -4,7 +4,7 @@
 resourceGroup="bartelsmann-rg"
 vmssName="my-vmss"
 location="brazilsouth"
-osType="/subscriptions/31ef2f62-0bbe-4030-848d-2d916510b804/resourceGroups/bartelsmann-rg/providers/Microsoft.Compute/images/vmssImage"
+osType="UbuntuLTS"
 adminName="udacityadmin"
 rand=$RANDOM
 storageAccount="udacitydiag$rand"
@@ -67,10 +67,6 @@ az vmss create \
   --upgrade-policy-mode automatic \
   --admin-username $adminName \
   --generate-ssh-keys \
-  --assign-identity \
-  --plan-publisher cognosys \
-  --plan-name docker-community-edition-with-ubuntu-20-04-lts \
-  --plan-product docker-community-edition-with-ubuntu-20-04-lts \
   --verbose
 
 echo "VM scale set created: $vmssName"
@@ -148,3 +144,15 @@ az network nsg rule create \
 echo "Port 22 added to NSG: $nsgName"
 
 echo "VMSS script completed!"
+
+echo "Running custom script"
+
+az vmss extension set \
+    --publisher Microsoft.Azure.Extensions \
+    --version 2.0 \
+    --name CustomScript \
+    --resource-group bartelsmann-rg \
+    --vmss-name $vmssName \
+    --settings @customConfig.json
+
+echo "Finished running custom script"

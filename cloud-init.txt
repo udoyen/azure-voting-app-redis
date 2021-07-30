@@ -28,9 +28,8 @@ runcmd:
   - service redis restart
   - apt-get update
   - sudo -H pip3 install --upgrade pip
-  - git clone https://github.com/udoyen/azure-voting-app-redis.git  /home/udacityadmin/azure-voting-app-redis
-  - cd /home/udacityadmin/azure-voting-app-redis/
-  - git checkout Deploy_to_VMSS
-  - cd azure-vote/
+  - git clone https://github.com/udoyen/azure-voting-app-redis.git  /home/udacityadmin/azure-voting-app-redis --branch Deploy_to_VMSS
+  - cd /home/udacityadmin/azure-voting-app-redis/azure-vote/
   - sed -E -i.bak 's/^(\s*)(app\.run\(\)[[:space:]]*\#[[:space:]]*local)/\1\# \2/' main.py 
   - sed -E -i.bak 's/^(\s*)\#\s*(app\.run\(host.*\)\s*\#\s*remote)/\1\2/' main.py
+ 
