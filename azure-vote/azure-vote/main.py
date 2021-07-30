@@ -32,24 +32,24 @@ config_integration.trace_integrations(['logging'])
 config_integration.trace_integrations(['requests'])
 # Standard Logging
 logger = logging.getLogger(__name__)
-handler = AzureLogHandler(connection_string='InstrumentationKey=93dc95c3-40d5-4eaf-9c1d-3d41ba7e4412')
+handler = AzureLogHandler(connection_string='InstrumentationKey=0d798b12-ed86-4926-8602-745764ba51d2;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/')
 handler.setFormatter(logging.Formatter('%(traceId)s %(spanId)s %(message)s'))
 logger.addHandler(handler)
 # Logging custom Events
-logger.addHandler(AzureEventHandler(connection_string='InstrumentationKey=93dc95c3-40d5-4eaf-9c1d-3d41ba7e4412'))
+logger.addHandler(AzureEventHandler(connection_string='InstrumentationKey=0d798b12-ed86-4926-8602-745764ba51d2;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/'))
 # Set the logging level
 logger.setLevel(logging.INFO)
 
 # Metrics
 exporter = metrics_exporter.new_metrics_exporter(
 enable_standard_metrics=True,
-connection_string='InstrumentationKey=93dc95c3-40d5-4eaf-9c1d-3d41ba7e4412')
+connection_string='InstrumentationKey=0d798b12-ed86-4926-8602-745764ba51d2;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/')
 view_manager.register_exporter(exporter)
 
 # Tracing
 tracer = Tracer(
  exporter=AzureExporter(
-     connection_string='InstrumentationKey=93dc95c3-40d5-4eaf-9c1d-3d41ba7e4412'),
+     connection_string='InstrumentationKey=0d798b12-ed86-4926-8602-745764ba51d2;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/'),
  sampler=ProbabilitySampler(1.0),
 )
 
@@ -58,7 +58,7 @@ app = Flask(__name__)
 # Requests
 middleware = FlaskMiddleware(
  app,
- exporter=AzureExporter(connection_string="InstrumentationKey=93dc95c3-40d5-4eaf-9c1d-3d41ba7e4412"),
+ exporter=AzureExporter(connection_string="InstrumentationKey=0d798b12-ed86-4926-8602-745764ba51d2;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/"),
  sampler=ProbabilitySampler(rate=1.0)
 )
 
